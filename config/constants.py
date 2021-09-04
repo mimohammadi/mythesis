@@ -30,7 +30,7 @@ class SystemModelEnums(BaseEnum):
     N = name_tuple(5, "Number of Tasks")
     B = name_tuple(1, "MHz Wireless Bandwidth")
     a = name_tuple(3, "Path Lose Factor")
-    sigma_2 = name_tuple(-100, "dmb Background Noise")
+    sigma_2 = name_tuple(10**(-10), "mw -100 dmb Background Noise")
     w = name_tuple(900, "MHz CPU Clock speed of MUEs")
     f__0 = name_tuple(4000, "MHz CPU Clock speed of Fog Server and Cloud Server")
     p__u = name_tuple(0.1, "mw Transmit Power of MUEs")

@@ -7,6 +7,7 @@ from algorithmes.fitness.ga_fitness import GAFitness
 from algorithmes.genetic_alg import GeneticAlg as ga
 from algorithmes.gini_coefficient_alg import GiniCoefficientBasedAlg as gc_alg
 
+
 S_n = [Distributions.random_distribution(sr.Min_Task_Size.value, sr.Max_Task_Size.value) for i in range(se.N.value)]
 D_n = [Distributions.random_distribution(sr.Min_Task_Cmp.value, sr.Max_Task_Cmp.value) for i in range(se.N.value)]
 P_n = [Distributions.zipf_distribution(n, se.N.value, se.betta.value) for n in range(se.N.value)]
@@ -80,16 +81,33 @@ if __name__ == '__main__':
     #                       ** (1/2) for m in range(se.M.value)] for i in range(se.K.value)]
 
     # GA
-    t_max = 2
-    solution, solution_fitness, solution_idx = ga.genetic_alg(t_max, 2, fitness, 2, se.N.value, 0.1, 0.001)
-
+    t_max = 100
+    # solution, solution_fitness, solution_idx = ga.genetic_alg(t_max,
+    #                                                           100,
+    #                                                           fitness,
+    #                                                           100,
+    #                                                           se.N.value,
+    #                                                           0.1,
+    #                                                           0.1)
+    solution, solution_fitness, solution_idx = ga.genetic_alg(t_max,
+                                                              200,
+                                                              fitness,
+                                                              gene_type=[float],
+                                                              gene_space=[[0, 1]],
+                                                              number_of_solutions=200,
+                                                              num_genes=[se.N.value],
+                                                              crossover_probability=0.1,
+                                                              mutation_probability=0.01)
+    print('final solution = ')
+    print(solution)
     for n in range(se.N.value):
         task_library[n].q__n = solution[n]
     set_of_mues_of_fogs = [Distributions.random_distribution(1, se.K__max.value) for i in range(se.M.value)]
     # print('solution:')
     # print(solution)
     # request_set_of_mues = Distributions.h_ppp
-    # a_i_m = gc_alg.gini_mue_association_alg(set_of_mues_of_fogs, request_set_of_mues, set_of_mues, distance_from_fog,
+    # a_i_m = gc_alg.gini_
+    # ue_association_alg(set_of_mues_of_fogs, request_set_of_mues, set_of_mues, distance_from_fog,
     #                                         D_n, set_of_fogs, task_library)
 
 

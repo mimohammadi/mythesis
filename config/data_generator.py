@@ -10,7 +10,7 @@ class Distributions:
 
     @classmethod
     def random_distribution(cls, _low, _high):
-        return round(randint(_low, _high), 4)
+        return randint(_low, _high)
 
     @classmethod
     def normal_distribution(cls, _mean, _sigma):
