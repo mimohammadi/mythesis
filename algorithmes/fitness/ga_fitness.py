@@ -3,6 +3,7 @@ from config.data_generator import Distributions
 from config.constants import SystemModelEnums as se, SystemModelRanges as sr
 import math
 from scipy import integrate as integrate
+import numpy as np
 
 
 class GAFitness:
@@ -121,3 +122,29 @@ class GAFitness:
 def f(q_n, distance_of_mues, i, j, x_n):
     return GAFitness.transmit_rate(distance_of_mues, i, j, x_n) * GAFitness.association_distance(x_n, q_n)
     #return GAFitness.association_distance(x_n, q_n)
+
+
+def on_mutation(ga_instance, offspring):
+    print('offspring=')
+    print(offspring)
+    counter = 0
+    deleted = 0
+    arr = offspring
+    for chromosome in offspring:
+        sum_ = 0
+        for q in chromosome:
+            if q < 0:
+                arr = np.delete(arr, counter - deleted, 0)
+                deleted += 1
+                break
+            sum_ += q
+        if sum_ > 1:
+            arr = np.delete(arr, counter - deleted, 0)
+            deleted += 1
+            print('arr = ')
+            print(arr)
+
+        counter += 1
+    print('offspring = ')
+    print(arr)
+    return arr

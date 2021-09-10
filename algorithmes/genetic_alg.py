@@ -8,7 +8,7 @@ class GeneticAlg:
     @classmethod
     def genetic_alg(cls, iteration_num, parent_num, fitness, gene_type,
                     number_of_solutions, num_genes, crossover_probability,
-                    mutation_probability, gene_space):
+                    mutation_probability, gene_space, on_constrain=None):
         # initial_population is built by sol_per_pop and num_genes
         # num_genes = Number of genes in the solution / chromosome
         # ga_instance = pygad.GA(num_generations=iteration_num,
@@ -39,7 +39,7 @@ class GeneticAlg:
                             keep_parents=0,
                             crossover_probability=crossover_probability,
                             mutation_probability=mutation_probability,
-                            on_constrain=on_mutation,
+                            on_constrain=on_constrain,
                             save_best_solutions=True,
                             gene_space=gene_space)
 
@@ -68,27 +68,4 @@ class GeneticAlg:
     #     return offspring
 
 
-def on_mutation(ga_instance, offspring):
-    print('offspring=')
-    print(offspring)
-    counter = 0
-    deleted = 0
-    arr = offspring
-    for chromosome in offspring:
-        sum_ = 0
-        for q in chromosome:
-            if q < 0:
-                arr = np.delete(arr, counter - deleted, 0)
-                deleted += 1
-                break
-            sum_ += q
-        if sum_ > 1:
-            arr = np.delete(arr, counter - deleted, 0)
-            deleted += 1
-            print('arr = ')
-            print(arr)
 
-        counter += 1
-    print('offspring = ')
-    print(arr)
-    return arr

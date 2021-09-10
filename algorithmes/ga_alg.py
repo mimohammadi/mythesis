@@ -424,7 +424,7 @@ class GA:
             #     self.on_fitness(self, self.last_generation_fitness)
 
             # Appending the fitness value of the best solution in the current generation to the best_solutions_fitness attribute.
-            ## self.best_solutions_fitness.append(best_solution_fitness)
+            self.best_solutions_fitness.append(best_solution_fitness)
             #
             # if self.save_solutions:
             #     self.solutions_fitness.extend(self.last_generation_fitness)
