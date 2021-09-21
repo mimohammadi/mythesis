@@ -4,6 +4,8 @@ from config.constants import SystemModelEnums, SystemModelRanges
 
 class MUE:
     def __init__(self, x_, y_, request_set=None, a_i_m=None, y_i=None, f_i_m=None, edge_=None, cached_task=None):
+        if request_set is None:
+            request_set = []
         self.x_ = x_
         self.y_ = y_
         self.edge_ = edge_

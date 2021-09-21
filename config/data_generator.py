@@ -1,6 +1,6 @@
 from random import normalvariate
 import numpy as np
-from numpy.random import randint, uniform, poisson
+from numpy.random import randint, uniform, poisson, random_integers
 
 
 class Distributions:
@@ -10,7 +10,7 @@ class Distributions:
 
     @classmethod
     def random_distribution(cls, _low, _high):
-        return randint(_low, _high)
+        return random_integers(_low, _high)
 
     @classmethod
     def normal_distribution(cls, _mean, _sigma):
@@ -29,6 +29,12 @@ class Distributions:
         yy = y_delta * uniform(10**(-20), 1, numb_points) + _y_min  # y coordinates of Poisson points
         xxx = [round(num, 4) for num in xx]
         yyy = [round(num, 4) for num in yy]
+        if not xxx:
+            cls.homogenous_poisson_point_process_distribution(_x_min, _x_max, _y_min,
+                                                              _y_max, _lambda)
+        # if len(xxx) == 1:
+        #     cls.homogenous_poisson_point_process_distribution(_x_min, _x_max, _y_min,
+        #                                                       _y_max, _lambda)
         return xxx, yyy
 
     @classmethod

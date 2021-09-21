@@ -2,7 +2,7 @@ import numpy as np
 from geneticalgorithm import geneticalgorithm as ga
 import pygad
 from config.constants import SystemModelEnums as se
-
+import main
 
 class GeneticAlg:
     @classmethod
@@ -39,44 +39,54 @@ class GeneticAlg:
 
 
 def on_mutation(ga_instance, offspring):
+    arr = offspring
+    counter = 0
+    deleted = 0
     for chromosome in offspring:
-        a_i_m = [[0 for row in range(se.M.value)] for col in range(se.K.value)]
-        y = [0 for col in range(se.K.value)]
-        f_i_m = [[0 for row in range(se.M.value)] for col in range(se.K.value)]
-        c = len(chromosome)/4
-        for i in range(int(c)):
-            a_i_m[chromosome[i] - 1][chromosome[i+1] - 1] = 1
-            y[chromosome[i] - 1] = chromosome[i+2]
-            f_i_m[chromosome[i] - 1][chromosome[i + 1] - 1] = chromosome[i+3]
+        a_i_m, y, f_i_m = main.split_chromosome(chromosome)
 
         for i in range(se.K.value):
-            sum_ = 0
-            if y[i] != 0 and y[i] != 1:
-                offspring.remove(chromosome)
-                break
-            else:
-                for m in range(se.M.value):
-                    if f_i_m[i][m] < 0 or f_i_m[i][m] > se.f__0.value:
-                        offspring.remove()
-                        break
-                    else:
-                        sum_ += a_i_m[i][m]
-                if sum_ > 1:
-                    offspring.remove(chromosome)
+            for n in range(len(y[i])):
+                sum_ = 0
+                if y[i][n] != 0 and y[i][n] != 1:
+                    # offspring.remove(chromosome)
+                    arr = np.delete(arr, counter - deleted, 0)
+                    deleted += 1
                     break
+                else:
+                    for m in range(se.M.value):
+                        sum_ += a_i_m[i][m]
+                    if sum_ > 1:
+                        # offspring.remove(chromosome)
+                        arr = np.delete(arr, counter - deleted, 0)
+                        deleted += 1
+                        break
+        ########
         for m in range(se.M.value):
             sum_f = 0
             sum_a = 0
             for i in range(se.K.value):
-                sum_f += f_i_m[i][m]
                 sum_a += a_i_m[i][m]
+                for n in range(len(f_i_m[i][m])):
+                    if f_i_m[i][m]:
+                        if f_i_m[i][m][n] < 0 or f_i_m[i][m][n] > se.f__0.value:
+                            # offspring.remove()
+                            arr = np.delete(arr, counter - deleted, 0)
+                            deleted += 1
+                            break
+                        else:
+                            sum_f += f_i_m[i][m][n]
 
             if sum_f > se.f__0.value:
-                offspring.remove(chromosome)
+                # offspring.remove(chromosome)
+                arr = np.delete(arr, counter - deleted, 0)
+                deleted += 1
                 break
             elif sum_a > se.K__max.value:
-                offspring.remove(chromosome)
+                # offspring.remove(chromosome)
+                arr = np.delete(arr, counter - deleted, 0)
+                deleted += 1
                 break
-
+        counter += 1
     return offspring
 

@@ -17,6 +17,7 @@ class GA:
                  keep_parents=-1, save_best_solutions=False,
                  on_constrain=None):
 
+
         self.num_generations = num_generations
         self.initial_pop_num = initial_pop_num
         self.gene_num = gene_num  # list of number of each gene types
@@ -38,7 +39,10 @@ class GA:
         self.crossover_type = "single_point"
         self.mutation_type = "random"
         self.save_best_solutions = save_best_solutions
-
+        if not (on_constrain is None):
+            self.on_constrain = on_constrain
+        else:
+            self.on_constrain = None
         for i in self.gene_num:
             self.total_gene_num += i
         # Validate keep_parents.
@@ -57,11 +61,6 @@ class GA:
 
         if (self.mutation_type == "random"):
             self.mutation = self.random_mutation
-
-        if not (on_constrain is None):
-            self.on_constrain = on_constrain
-        else:
-            self.on_constrain = None
 
         if callable(fitness_func):
             # Check if the fitness function accepts 2 paramaters.
@@ -89,6 +88,9 @@ class GA:
                     elif self.gene_type[num] == bool:
                         chromosome.append(np.random.randint(2, size=1))
             initial_pop.append(chromosome)
+        print('initial_pop = ')
+        print(initial_pop)
+
         return np.array(initial_pop)
 
     def cal_pop_fitness(self):
@@ -132,6 +134,8 @@ class GA:
 
         fitness_sum = np.sum(fitness)
         probs = fitness / fitness_sum
+        print('fitness')
+        print(fitness)
         probs_start = np.zeros(probs.shape,
                                   dtype=np.float)  # An array holding the start values of the ranges of probabilities.
         probs_end = np.zeros(probs.shape,
@@ -357,7 +361,6 @@ class GA:
 
         """
         Creates, shows, and returns a figure that summarizes how the fitness value evolved by generation. Can only be called after completing at least 1 generation. If no generation is completed, an exception is raised.
-
         Accepts the following:
             title: Figure title.
             xlabel: Label on the X-axis.
@@ -367,7 +370,6 @@ class GA:
             plot_type: Type of the plot which can be either "plot" (default), "scatter", or "bar".
             color: Color of the plot which defaults to "#3870FF".
             save_dir: Directory to save the figure.
-
         Returns the figure.
         """
 
@@ -404,6 +406,10 @@ class GA:
         """
         Runs the genetic algorithm. This is the main method in which the genetic algorithm is evolved through a number of generations.
         """
+        if not (self.on_constrain is None):
+            self.population = self.on_constrain(self, self.population)
+            # if self.population.size == 0:
+            #     self.population = self.initial_population_()
 
         # # Measuring the fitness of each chromosome in the population. Save the fitness in the last_generation_fitness attribute.
         self.last_generation_fitness = self.cal_pop_fitness()
