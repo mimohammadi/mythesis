@@ -3,6 +3,8 @@ from geneticalgorithm import geneticalgorithm as ga
 import pygad
 from config.constants import SystemModelEnums as se
 import main
+from config.data_generator import Distributions as dist
+
 
 class GeneticAlg:
     @classmethod
@@ -17,7 +19,8 @@ class GeneticAlg:
                                sol_per_pop=number_of_solutions,
                                num_genes=num_genes,
                                gene_type=[[int, int, int, float] for row in range(num_genes)],
-                               gene_space=[[range(1, se.K.value), range(1, se.M.value), [0, 1], range(0, se.f__0.value)] for row in range(num_genes)],
+                               gene_space=[[range(1, se.K.value), range(1, se.M.value), [0, 1], range(0, se.f__0.value)]
+                                           for row in range(num_genes)],
                                parent_selection_type="rws",
                                keep_parents=0,
                                crossover_type="single_point",
@@ -42,25 +45,43 @@ def on_mutation(ga_instance, offspring):
     arr = offspring
     counter = 0
     deleted = 0
+    c = int(len(offspring[0]) / 3)
     for chromosome in offspring:
         a_i_m, y, f_i_m = main.split_chromosome(chromosome)
-
+        sum_req = 0
+        sum_a_i_m = [[] for row in range(se.M.value)]
         for i in range(se.K.value):
-            for n in range(len(y[i])):
-                sum_ = 0
+            for n in range(len(y[i])):  # len(y[i]) = num of requests of mue
+                sum_req += 1
                 if y[i][n] != 0 and y[i][n] != 1:
-                    # offspring.remove(chromosome)
-                    arr = np.delete(arr, counter - deleted, 0)
-                    deleted += 1
-                    break
-                else:
-                    for m in range(se.M.value):
-                        sum_ += a_i_m[i][m]
-                    if sum_ > 1:
-                        # offspring.remove(chromosome)
-                        arr = np.delete(arr, counter - deleted, 0)
-                        deleted += 1
-                        break
+                    chromosome[c - 1 + sum_req] = dist.random_distribution(0, 1)
+                    # arr = np.delete(arr, counter - deleted, 0)
+                    # deleted += 1
+                    # break
+                for m in range(se.M.value):
+                    if np.sum(a_i_m[i][m]) > 0:
+                        sum_a_i_m[m] = sum_a_i_m[m] + [i]
+                    if len(sum_a_i_m[m]) > se.K__max.value:
+                        flag = 0
+                        index_m = 0
+                        f = 0
+                        for mm in range(se.M.value):
+                            if i in sum_a_i_m[mm] and mm != m:
+                                chromosome[sum_req - 1] = mm + 1
+                                flag = 1
+                                break
+                            elif len(sum_a_i_m[mm]) < se.K__max.value and f == 0:
+                                index_m = mm + 1
+                                f = 1
+                        if flag == 0 and index_m > 0:
+                            chromosome[sum_req - 1] = index_m
+
+                        else:
+                            chromosome[sum_req - 1] = se.M.value + 1 # means that its going to be computed local or d2d and has no fog
+                            y = 2 # ???
+                        # arr = np.delete(arr, counter - deleted, 0)
+                        # deleted += 1
+                        # break
         ########
         for m in range(se.M.value):
             sum_f = 0
@@ -89,4 +110,3 @@ def on_mutation(ga_instance, offspring):
                 break
         counter += 1
     return offspring
-

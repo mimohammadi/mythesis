@@ -10,14 +10,8 @@ class TaskOffloadingOpt:
         for i in range(se.K.value):
             for m in range(se.M.value):
                 for index_n, n in enumerate(set_of_mues[i].request_set):
-                    print(set_of_mues[i].request_set)
-                    print(index_n)
-                    if y_m_i[i] != [] and f__i_m[i][m] != [] and a__i_m[i][m] != []:
-                        print('y_[i]=')
-                        print(len(y_m_i[i]))
-                        print(len(f__i_m[i][m]))
-                        u_fog_i, u_cloud_i = cls.utility_for_fog_and_cloud_offloading(i, m, n, y_m_i[i][index_n], task_library, f__i_m[i][m][index_n], distance_from_fog, distance_from_cloud)
-                        sum_ += a__i_m[i][m] * (y_m_i[i][index_n] * u_fog_i + (1 - y_m_i[i][index_n]) * u_cloud_i)
+                    u_fog_i, u_cloud_i = cls.utility_for_fog_and_cloud_offloading(i, m, n, y_m_i[i][index_n], task_library, f__i_m[i][m][index_n], distance_from_fog, distance_from_cloud)
+                    sum_ += a__i_m[i][m][index_n] * (y_m_i[i][index_n] * u_fog_i + (1 - y_m_i[i][index_n]) * u_cloud_i)
 
         return - sum_
 
