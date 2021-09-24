@@ -4,6 +4,7 @@ from config.constants import SystemModelEnums as se, SystemModelRanges as sr
 import math
 from scipy import integrate as integrate
 import numpy as np
+from random import random
 
 
 class GAFitness:
@@ -13,7 +14,7 @@ class GAFitness:
         # print(caching_probability)
         # print(task_library)
         # print(distance_of_mues)
-        return - (cls.avg_utility_of_local_task_caching(popularity_of_tasks, caching_probability, task_library) +
+        return 1 / (cls.avg_utility_of_local_task_caching(popularity_of_tasks, caching_probability, task_library) +
                      cls.avg_utility_of_d2d_task_caching(popularity_of_tasks, caching_probability, task_library,
                                                          distance_of_mues))
         # return
@@ -79,8 +80,8 @@ class GAFitness:
                     if k != i and k != j and k != z:
                         if distance_of_mues[z][k] != 0:
                             sum_ += (distance_of_mues[z][k] ** (- se.a.value)) * se.g_d2d_i_j.value
-                            print('transmit_rate')
-                            print(sum_)
+                            # print('transmit_rate')
+                            # print(sum_)
                     # else:
                     #     break
         # print('face: ')
@@ -125,26 +126,32 @@ def f(q_n, distance_of_mues, i, j, x_n):
 
 
 def on_mutation(ga_instance, offspring):
-    print('offspring=')
-    print(offspring)
+    # print('offspring=')
+    # print(offspring)
     counter = 0
     deleted = 0
     arr = offspring
-    for chromosome in offspring:
+    for ind_ch, chromosome in enumerate(offspring):
         sum_ = 0
-        for q in chromosome:
-            if q < 0:
-                arr = np.delete(arr, counter - deleted, 0)
-                deleted += 1
-                break
+        for ind_q, q in enumerate(chromosome):
+            if q < 0 or q > 1:
+                arr[ind_ch][ind_q] = random() * (1 - 0) + 0
+                q = arr[ind_ch][ind_q]
+                # arr = np.delete(arr, counter - deleted, 0)
+                # deleted += 1
+                # break
             sum_ += q
         if sum_ > 1:
-            arr = np.delete(arr, counter - deleted, 0)
-            deleted += 1
-            print('arr = ')
-            print(arr)
+            for ind_q, q in enumerate(chromosome):
+                arr[ind_ch][ind_q] = q / sum_
+                q = arr[ind_ch][ind_q]
+            # arr = np.delete(arr, counter - deleted, 0)
+            # deleted += 1
+            # print('arr = ')
+            # print(arr)
 
-        counter += 1
-    print('offspring = ')
-    print(arr)
+        # counter += 1
+    # print('arr = ')
+    # print(arr)
+    # return arr
     return arr

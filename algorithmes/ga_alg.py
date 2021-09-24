@@ -242,10 +242,20 @@ class GA:
                 if probs[gene_idx] <= self.mutation_probability:
                     if len(self.gene_space) > 1:
                         # Returning the current gene space from the 'gene_space' attribute.
-                        if type(self.gene_space[gene_idx]) in [np.ndarray, list]:
-                            curr_gene_space = self.gene_space[gene_idx].copy()
+                        # print('gene_idx = ')
+                        # print(gene_idx)
+                        if len(self.gene_space) < len(offspring.shape[1]):
+                            c = len(offspring.shape[1]) / len(self.gene_space)
+                            if type(self.gene_space[int(gene_idx / c)]) in [np.ndarray, list]:
+                                curr_gene_space = self.gene_space[int(gene_idx / c)].copy()
+                            else:
+                                curr_gene_space = self.gene_space[int(gene_idx / c)]
+
                         else:
-                            curr_gene_space = self.gene_space[gene_idx]
+                            if type(self.gene_space[gene_idx]) in [np.ndarray, list]:
+                                curr_gene_space = self.gene_space[gene_idx].copy()
+                            else:
+                                curr_gene_space = self.gene_space[gene_idx]
 
                         # If the gene space has only a single value, use it as the new gene value.
                         # if type(curr_gene_space) in GA.supported_int_float_types:
@@ -311,6 +321,8 @@ class GA:
                         else:
                             offspring[offspring_idx, gene_idx] = self.gene_type[0](value_from_space)
                     else:
+                        # print(gene_idx)
+                        # print(self.gene_type[gene_idx][1])
                         if not self.gene_type[gene_idx][1] is None:
                             offspring[offspring_idx, gene_idx] = np.round(
                                 self.gene_type[gene_idx][0](value_from_space),
@@ -341,6 +353,8 @@ class GA:
         # At first, the fitness is calculated for each solution in the final generation.
         if pop_fitness is None:
             pop_fitness = self.cal_pop_fitness()
+        print('pop_fitness=')
+        print(pop_fitness)
         # Then return the index of that solution corresponding to the best fitness.
         best_match_idx = np.where(pop_fitness == np.max(pop_fitness))[0][0]
 
@@ -413,6 +427,8 @@ class GA:
 
         # # Measuring the fitness of each chromosome in the population. Save the fitness in the last_generation_fitness attribute.
         self.last_generation_fitness = self.cal_pop_fitness()
+        print('self.last_generation_fitness = ')
+        print(self.last_generation_fitness)
 
         best_solution, best_solution_fitness, best_match_idx = self.best_solution(
             pop_fitness=self.last_generation_fitness)

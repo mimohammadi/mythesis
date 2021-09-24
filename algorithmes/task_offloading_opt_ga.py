@@ -43,21 +43,23 @@ class GeneticAlg:
 
 def on_mutation(ga_instance, offspring):
     arr = offspring
-    counter = 0
-    deleted = 0
+    # counter = 0
+    # deleted = 0
     c = int(len(offspring[0]) / 3)
-    for chromosome in offspring:
-        a_i_m, y, f_i_m = main.split_chromosome(chromosome)
+    for ind_ch, chromosome in enumerate(offspring):
+        np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
+        chrom, a_i_m, y, f_i_m = main.split_chromosome(chromosome)
+        arr[ind_ch] = chrom
         sum_req = 0
         sum_a_i_m = [[] for row in range(se.M.value)]
         for i in range(se.K.value):
             for n in range(len(y[i])):  # len(y[i]) = num of requests of mue
                 sum_req += 1
-                if y[i][n] != 0 and y[i][n] != 1:
-                    chromosome[c - 1 + sum_req] = dist.random_distribution(0, 1)
-                    # arr = np.delete(arr, counter - deleted, 0)
-                    # deleted += 1
-                    # break
+                # if y[i][n] != 0 and y[i][n] != 1 and y[i][n] != 2:  # 2 means local or d2d cache
+                #     chromosome[c - 1 + sum_req] = dist.random_distribution(0, 2)
+                #     arr = np.delete(arr, counter - deleted, 0)
+                #     deleted += 1
+                #     break
                 for m in range(se.M.value):
                     if np.sum(a_i_m[i][m]) > 0:
                         sum_a_i_m[m] = sum_a_i_m[m] + [i]
@@ -67,46 +69,47 @@ def on_mutation(ga_instance, offspring):
                         f = 0
                         for mm in range(se.M.value):
                             if i in sum_a_i_m[mm] and mm != m:
-                                chromosome[sum_req - 1] = mm + 1
+                                arr[ind_ch][sum_req - 1] = mm + 1
+                                index_m = mm + 1
                                 flag = 1
                                 break
                             elif len(sum_a_i_m[mm]) < se.K__max.value and f == 0:
                                 index_m = mm + 1
                                 f = 1
-                        if flag == 0 and index_m > 0:
-                            chromosome[sum_req - 1] = index_m
+                        if flag == 1 or f == 1:
+                            arr[ind_ch][sum_req - 1] = index_m
+                            f_i_m[i][index_m - 1][n] = f_i_m[i][m][n]
+                            a_i_m[i][index_m - 1][n] = a_i_m[i][m][n]
+                            f_i_m[i][m][n] = 0
+                            a_i_m[i][m][n] = 0
+                            sum_a_i_m[index_m - 1].append(i)
 
-                        else:
-                            chromosome[sum_req - 1] = se.M.value + 1 # means that its going to be computed local or d2d and has no fog
-                            y = 2 # ???
+                        elif flag == 0 and f == 0:
+                            arr[ind_ch][sum_req - 1] = se.M.value + 1 # means that its going to be computed local or d2d and has no fog
+                            y[i][n] = 2 # ???
+                            arr[ind_ch][c - 1 + sum_req] = 2
+                            arr[ind_ch][2 * c - 1 + sum_req] = 0
+                            f_i_m[i][m][n] = 0
+                            a_i_m[i][m][n] = 0
+
+                        sum_a_i_m[m].remove(i)
+
                         # arr = np.delete(arr, counter - deleted, 0)
                         # deleted += 1
                         # break
         ########
-        for m in range(se.M.value):
-            sum_f = 0
-            sum_a = 0
-            for i in range(se.K.value):
-                sum_a += a_i_m[i][m]
-                for n in range(len(f_i_m[i][m])):
-                    if f_i_m[i][m]:
-                        if f_i_m[i][m][n] < 0 or f_i_m[i][m][n] > se.f__0.value:
-                            # offspring.remove()
-                            arr = np.delete(arr, counter - deleted, 0)
-                            deleted += 1
-                            break
-                        else:
-                            sum_f += f_i_m[i][m][n]
 
-            if sum_f > se.f__0.value:
-                # offspring.remove(chromosome)
-                arr = np.delete(arr, counter - deleted, 0)
-                deleted += 1
-                break
-            elif sum_a > se.K__max.value:
-                # offspring.remove(chromosome)
-                arr = np.delete(arr, counter - deleted, 0)
-                deleted += 1
-                break
-        counter += 1
-    return offspring
+        # for m in range(se.M.value):
+        #     set_m = set(sum_a_i_m[m])
+        #     for f in range(se.M.value):
+        #         if f != m:
+        #             set_of_common_mues = set_m.intersection(sum_a_i_m[f])
+        #             list_of_common_mues = list(set_of_common_mues)
+        #             for k in range(len(list_of_common_mues)):
+        #                 ind = dist.random_distribution(0, 1)
+        #                 if ind == 0:
+        #                     for n in range(len(a_i_m[k][f])):
+        #                         if n != 0:
+        #                             chromosome[]
+
+    return arr

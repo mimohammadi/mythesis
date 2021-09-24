@@ -35,7 +35,7 @@ class TaskOffloadingOpt:
             t_d_m_i_n = 0
         e_d_m_i_n = se.p__m.value * t_d_m_i_n
         #fog
-        if y_i_m == 0:
+        if y_i_m == 0 and f__i_m > 0:
             t_f_i_m_n = task_library[n].D__n / f__i_m
             e_cpt_i_m_n = se.kappa_server.value * task_library[n].D__n * (f__i_m ** 2)
 
@@ -43,7 +43,7 @@ class TaskOffloadingOpt:
             t_fog_i_m_n = t_u_i_m_n + t_d_m_i_n + t_f_i_m_n
             e_fog_i_m_n = e_u_i_m_n + e_cpt_i_m_n + e_d_m_i_n
             u_fog_i = se.rho_t.value * (t_l_i_n - t_fog_i_m_n) + se.rho_e.value * (e_l_i_n - e_fog_i_m_n)
-        else:
+        elif y_i_m == 1:
             t_c_i_n = task_library[n].D__n / se.f__0.value
             e_cpt_i_n = se.kappa_server.value * task_library[n].D__n * (se.f__0.value ** 2)
             t_u = cls.cloud_transmit_rate(m, distance_from_cloud)
