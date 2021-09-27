@@ -27,10 +27,11 @@ class SystemModelEnums(BaseEnum):
     M = name_tuple(2, "Number of FNs")#2
     K = name_tuple(5, "Number of MUEs")#5
     K__max = name_tuple(2, "maximum number of accessible MUEs in each FN")#2
+    N__max = name_tuple(2, "maximum number of processable task in each FN")#2
     N = name_tuple(5, "Number of Tasks")#5
     B = name_tuple(1, "MHz Wireless Bandwidth")
     a = name_tuple(3, "Path Lose Factor")
-    sigma_2 = name_tuple(10**(-10), "mw -100 dmb Background Noise")
+    sigma_2 = name_tuple(-100, "mw 10**(-10) dmb Background Noise")
     w = name_tuple(900, "MHz CPU Clock speed of MUEs")
     f__0 = name_tuple(4000, "MHz CPU Clock speed of Fog Server and Cloud Server")
     p__u = name_tuple(0.1, "mw Transmit Power of MUEs")
@@ -40,12 +41,12 @@ class SystemModelEnums(BaseEnum):
     betta = name_tuple(0.8, "The Popularity Parameter")
     theta = name_tuple(0, "ratio of data size after to data size before computation of task")
     lambda_ = name_tuple(0.1, "MUE distribution density")
-    kappa = name_tuple(10**(-25), "energy effective switched capacitance of MUE")
-    kappa_server = name_tuple(10**(-25), "energy effective switched capacitance of Fog server")
+    kappa = name_tuple(10**(-20), "energy effective switched capacitance of MUE")
+    kappa_server = name_tuple(10**(-20), "energy effective switched capacitance of Fog server")
     g_d2d_i_j = name_tuple(math.exp(1), "small-scale fading coefficient")
-    D2D_establish_threshold = name_tuple(10**(-25), "0? dBm D2d establishment threshold") #???
-    g_u_i_m = name_tuple(10**(-25), "? channel gain of uplink")  #???
-    g_d_i_m = name_tuple(10**(-25), "? channel gain of downlink")  #???
+    D2D_establish_threshold = name_tuple(10**(-20), "0? dBm D2d establishment threshold") #???
+    g_u_i_m = name_tuple(10**(-20), "? channel gain of uplink")  #???
+    g_d_i_m = name_tuple(10**(-20), "? channel gain of downlink")  #???
 
 
 class SystemModelRanges(BaseEnum):
