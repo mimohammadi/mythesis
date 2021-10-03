@@ -47,36 +47,6 @@ distance_from_fog = [[((set_of_mues[i].x_ - set_of_fogs[m].x_) ** 2 + (set_of_mu
 
 distance_from_cloud = [((set_of_fogs[m].x_ - 100000)**2 + (set_of_fogs[m].y_ - 100000)**2) ** (1/2) for m in range(se.M.value)]
 
-request = []
-cacher = []
-number_of_all_requests = 0
-for n in range(len(task_library)):
-    qq = random()
-    if qq < task_library[n].q__n: # we dont bring the cached tasks here in requests for now
-        request, y = Distributions.homogenous_poisson_point_process_distribution(0, se.K.value, 0, se.K.value, se.lambda_.value)
-        number_of_all_requests += len(request)
-
-        for i in range(len(request)):
-            set_of_mues[int(request[i])].request_set.append(n)
-
-
-workbook = xlsxwriter.Workbook('algorithmes/request.xlsx')
-worksheet = workbook.add_worksheet()
-row_num = 1
-for i in range(se.K.value):
-    worksheet.write_column(row_num, i, set_of_mues[i].request_set)
-
-    print('set_of_mues['+str(i)+'].request_set =')
-    print(set_of_mues[i].request_set)
-
-    if set_of_mues[i].request_set == []:
-        exit()
-
-workbook.close()
-
-print('number_of_all_requests')
-print(number_of_all_requests)
-
 
 def fitness(solution0, solution_idx0):
     return GAFitness.ga_fitness(P_n, solution0, task_library, distances_of_mues)
@@ -84,8 +54,8 @@ def fitness(solution0, solution_idx0):
 
 def task_offloading_fitness(solution1, solution_idx1):
     np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
-    solution33, a__i_m, y_i, f__i_m = toog.split_chromosome(solution1)
-    return tolo.task_offloading_opt_problem(a__i_m, y_i, set_of_mues, task_library, f__i_m, distance_from_fog, distance_from_cloud)
+    solution33, a__i_m, y_i = toog.split_chromosome(solution1)
+    return tolo.task_offloading_opt_problem(a__i_m, y_i, set_of_mues, task_library, distance_from_fog, distance_from_cloud)
 
 
 if __name__ == '__main__':
@@ -105,13 +75,49 @@ if __name__ == '__main__':
 
     for n in range(se.N.value):
         task_library[n].q__n = solution[n]
+        print(task_library[n].q__n )
     set_of_mues_of_fogs = [Distributions.random_distribution(1, se.K__max.value) for i in range(se.M.value)]
 
+    # request = []
+    # cacher = []
+    # number_of_all_requests = 0
+    # for n in range(len(task_library)):
+    #     qq = random()
+    #     if qq < task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
+    #         request, y = Distributions.homogenous_poisson_point_process_distribution(0, se.K.value, 0, se.K.value,
+    #                                                                                  se.lambda_.value)
+    #         number_of_all_requests += len(request)
+    #
+    #         for i in range(len(request)):
+    #             set_of_mues[int(request[i])].request_set.append(n)
+    #
+    # workbook = xlsxwriter.Workbook('algorithmes/request.xlsx')
+    # worksheet = workbook.add_worksheet()
+    # row_num = 1
+    # for i in range(se.K.value):
+    #     worksheet.write_column(row_num, i, set_of_mues[i].request_set)
+    #
+    #     print('set_of_mues[' + str(i) + '].request_set =')
+    #     print(set_of_mues[i].request_set)
+    #
+    #     if set_of_mues[i].request_set == []:
+    #         while set_of_mues[i].request_set == []:
+    #             r = dist.random_distribution(0, se.N.value - 1)
+    #             if task_library[r].q__n > 0:
+    #                 set_of_mues[i].request_set.append(r)
+    #
+    #
+    #
+    # workbook.close()
+    #
+    # print('number_of_all_requests')
+    # print(number_of_all_requests)
+    number_of_all_requests =10
     final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
-        iteration_num=2, parent_num=3, fitness=task_offloading_fitness, gene_type=[int, int, float],
-        number_of_solutions=3, num_genes=[number_of_all_requests, number_of_all_requests, number_of_all_requests],
+        iteration_num=100, parent_num=50, fitness=task_offloading_fitness, gene_type=[int, int],
+        number_of_solutions=50, num_genes=[number_of_all_requests, number_of_all_requests],
         crossover_probability=0.9, mutation_probability=0.01,
-        gene_space=[[1, se.M.value + 1], [0, 2], [0, se.f__0.value]],
+        gene_space=[[1, se.M.value], [0, 1]],
         on_constrain=toa.on_mutation)
 
 

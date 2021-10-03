@@ -244,8 +244,9 @@ class GA:
                         # Returning the current gene space from the 'gene_space' attribute.
                         # print('gene_idx = ')
                         # print(gene_idx)
-                        if len(self.gene_space) < len(offspring.shape[1]):
-                            c = len(offspring.shape[1]) / len(self.gene_space)
+                        c = 1
+                        if len(self.gene_space) < offspring.shape[1]:
+                            c = offspring.shape[1] / len(self.gene_space)
                             if type(self.gene_space[int(gene_idx / c)]) in [np.ndarray, list]:
                                 curr_gene_space = self.gene_space[int(gene_idx / c)].copy()
                             else:
@@ -323,12 +324,13 @@ class GA:
                     else:
                         # print(gene_idx)
                         # print(self.gene_type[gene_idx][1])
-                        if not self.gene_type[gene_idx][1] is None:
-                            offspring[offspring_idx, gene_idx] = np.round(
-                                self.gene_type[gene_idx][0](value_from_space),
-                                self.gene_type[gene_idx][1])
-                        else:
-                            offspring[offspring_idx, gene_idx] = self.gene_type[gene_idx][0](value_from_space)
+                        c = offspring.shape[1] / len(self.gene_space)
+                        # if not self.gene_type[int(gene_idx/c)][1] is None:
+                        #     offspring[offspring_idx, gene_idx] = np.round(
+                        #         self.gene_type[int(gene_idx/c)][0](value_from_space),
+                        #         self.gene_type[int(gene_idx/c)][1])
+                        # else:
+                        offspring[offspring_idx, gene_idx] = self.gene_type[int(gene_idx/c)](value_from_space)
 
                     # if self.allow_duplicate_genes == False:
                     #     offspring[offspring_idx], _, _ = self.solve_duplicate_genes_by_space(

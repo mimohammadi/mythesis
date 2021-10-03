@@ -34,8 +34,8 @@ class SystemModelEnums(BaseEnum):
     sigma_2 = name_tuple(-100, "mw 10**(-10) dmb Background Noise")
     w = name_tuple(900, "MHz CPU Clock speed of MUEs")
     f__0 = name_tuple(4000, "MHz CPU Clock speed of Fog Server and Cloud Server")
-    p__u = name_tuple(0.1, "mw Transmit Power of MUEs")
-    p__m = name_tuple(0.2, "mw Transmit Power of FNs")
+    p__u = name_tuple(-10, " 0.1 mw Transmit Power of MUEs")
+    p__m = name_tuple(-20, " 0.2 mw Transmit Power of FNs")
     rho_e = name_tuple(0.016, "/J Revenue Coefficient Per Unit of Energy")
     rho_t = name_tuple(0.5, "/s Revenue Coefficient Per Unit of Saving Delay")
     betta = name_tuple(0.8, "The Popularity Parameter")
@@ -45,8 +45,8 @@ class SystemModelEnums(BaseEnum):
     kappa_server = name_tuple(10**(-20), "energy effective switched capacitance of Fog server")
     g_d2d_i_j = name_tuple(math.exp(1), "small-scale fading coefficient")
     D2D_establish_threshold = name_tuple(10**(-20), "0? dBm D2d establishment threshold") #???
-    g_u_i_m = name_tuple(10**(-20), "? channel gain of uplink")  #???
-    g_d_i_m = name_tuple(10**(-20), "? channel gain of downlink")  #???
+    g_u_i_m = name_tuple(-200, "? 10**(-20) channel gain of uplink")  #???
+    g_d_i_m = name_tuple(-200, "? 10**(-20) channel gain of downlink")  #???
 
 
 class SystemModelRanges(BaseEnum):

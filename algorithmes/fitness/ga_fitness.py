@@ -58,7 +58,7 @@ class GAFitness:
             for n in range(se.N.value):
                     t_l_i_n = task_library[n].D__n / se.w.value
                     e_l_i_n = se.kappa.value * task_library[n].D__n * se.w.value ** 2
-                    e_l_i_n = se.kappa.value * task_library[n].D__n * se.w.value ** 2
+                    # e_l_i_n = se.kappa.value * task_library[n].D__n * se.w.value ** 2
 
                     t_D_i_n = 0
                     e_D_i_n = 0
