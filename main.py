@@ -60,14 +60,14 @@ def task_offloading_fitness(solution1, solution_idx1):
 
 if __name__ == '__main__':
     # GA
-    t_max = 100
+    t_max = 500
 
     solution, solution_fitness, solution_idx = ga.genetic_alg(t_max,
-                                                              200,
+                                                              500,
                                                               fitness,
                                                               gene_type=[float],
                                                               gene_space=[[0, 1]],
-                                                              number_of_solutions=200,
+                                                              number_of_solutions=500,
                                                               num_genes=[se.N.value],
                                                               crossover_probability=0.9,
                                                               mutation_probability=0.01,
@@ -75,50 +75,55 @@ if __name__ == '__main__':
 
     for n in range(se.N.value):
         task_library[n].q__n = solution[n]
-        print(task_library[n].q__n )
+        print(task_library[n].q__n)
     set_of_mues_of_fogs = [Distributions.random_distribution(1, se.K__max.value) for i in range(se.M.value)]
 
-    # request = []
-    # cacher = []
-    # number_of_all_requests = 0
-    # for n in range(len(task_library)):
-    #     qq = random()
-    #     if qq < task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
-    #         request, y = Distributions.homogenous_poisson_point_process_distribution(0, se.K.value, 0, se.K.value,
-    #                                                                                  se.lambda_.value)
-    #         number_of_all_requests += len(request)
-    #
-    #         for i in range(len(request)):
-    #             set_of_mues[int(request[i])].request_set.append(n)
-    #
-    # workbook = xlsxwriter.Workbook('algorithmes/request.xlsx')
-    # worksheet = workbook.add_worksheet()
-    # row_num = 1
-    # for i in range(se.K.value):
-    #     worksheet.write_column(row_num, i, set_of_mues[i].request_set)
-    #
-    #     print('set_of_mues[' + str(i) + '].request_set =')
-    #     print(set_of_mues[i].request_set)
-    #
-    #     if set_of_mues[i].request_set == []:
-    #         while set_of_mues[i].request_set == []:
-    #             r = dist.random_distribution(0, se.N.value - 1)
-    #             if task_library[r].q__n > 0:
-    #                 set_of_mues[i].request_set.append(r)
-    #
-    #
-    #
-    # workbook.close()
-    #
-    # print('number_of_all_requests')
-    # print(number_of_all_requests)
-    number_of_all_requests =10
-    final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
-        iteration_num=100, parent_num=50, fitness=task_offloading_fitness, gene_type=[int, int],
-        number_of_solutions=50, num_genes=[number_of_all_requests, number_of_all_requests],
-        crossover_probability=0.9, mutation_probability=0.01,
-        gene_space=[[1, se.M.value], [0, 1]],
-        on_constrain=toa.on_mutation)
+    request = []
+    cacher = []
+    number_of_all_requests = 0
+    for n in range(len(task_library)):
+        qq = random()
+        if qq > task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
+            request, y = Distributions.homogenous_poisson_point_process_distribution(0, se.K.value, 0, se.K.value,
+                                                                                     se.lambda_.value)
+            number_of_all_requests += len(request)
+
+            for i in range(len(request)):
+                set_of_mues[int(request[i])].request_set.append(n)
+
+    workbook = xlsxwriter.Workbook('algorithmes/request.xlsx')
+    worksheet = workbook.add_worksheet()
+    row_num = 1
+    for i in range(se.K.value):
+        # if set_of_mues[i].request_set != []:
+        if set_of_mues[i].request_set == []:
+            set_of_mues[i].request_set.append(-1)
+        worksheet.write_column(row_num, i, set_of_mues[i].request_set)
+
+        print('set_of_mues[' + str(i) + '].request_set =')
+        print(set_of_mues[i].request_set)
+
+        # if set_of_mues[i].request_set == []:
+
+            # while set_of_mues[i].request_set == []:
+            #     r = dist.random_distribution(0, se.N.value - 1)
+            #     if task_library[r].q__n > 0:
+            #         set_of_mues[i].request_set.append(r)
+
+
+
+    workbook.close()
+
+    print('number_of_all_requests')
+    print(number_of_all_requests)
+    # number_of_all_requests =10
+    if number_of_all_requests != 0:
+        final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
+            iteration_num=500, parent_num=500, fitness=task_offloading_fitness, gene_type=[int, int],
+            number_of_solutions=500, num_genes=[number_of_all_requests, number_of_all_requests],
+            crossover_probability=0.9, mutation_probability=0.01,
+            gene_space=[[1, se.M.value], [0, 1]],
+            on_constrain=toa.on_mutation)
 
 
 

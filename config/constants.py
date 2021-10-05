@@ -24,11 +24,11 @@ class BaseEnum(Enum):
 
 
 class SystemModelEnums(BaseEnum):
-    M = name_tuple(2, "Number of FNs")#2
-    K = name_tuple(5, "Number of MUEs")#5
-    K__max = name_tuple(2, "maximum number of accessible MUEs in each FN")#2
-    N__max = name_tuple(2, "maximum number of processable task in each FN")#2
-    N = name_tuple(5, "Number of Tasks")#5
+    M = name_tuple(30, "Number of FNs")#2
+    K = name_tuple(250, "Number of MUEs")#5
+    K__max = name_tuple(10, "maximum number of accessible MUEs in each FN")#2
+    N__max = name_tuple(10, "maximum number of processable task in each FN")#2
+    N = name_tuple(100, "Number of Tasks")#5
     B = name_tuple(1, "MHz Wireless Bandwidth")
     a = name_tuple(3, "Path Lose Factor")
     sigma_2 = name_tuple(-100, "mw 10**(-10) dmb Background Noise")

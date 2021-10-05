@@ -58,7 +58,10 @@ def split_chromosome(solution2):
 
     df = pd.read_excel('algorithmes/request.xlsx')
     req_set = df.to_numpy()
-    new_req = [[int(req_set[i][j]) for i in range(np.size(req_set, 0)) if np.isnan(req_set[i][j]) == False] for j in range(np.size(req_set, 1))]
+    print('req_set')
+    print(req_set)
+    new_req = [[int(req_set[i][j]) if np.isnan(req_set[i][j]) == False else -1 for i in range(np.size(req_set, 0))] for j in range(np.size(req_set, 1))]
+    print('new_req')
     print(new_req)
     a__i_m = [[[0 for j in range(len(new_req[col]))] for row in range(se.M.value)] for col in range(se.K.value)]
     y__ = [[0 for j in range(len(new_req[col]))] for col in range(se.K.value)]
@@ -72,97 +75,34 @@ def split_chromosome(solution2):
         fog_i = 0
 
         for n in range(len(new_req[i])):
-            sum_of_req += 1
-            if int(solution2[sum_of_req - 1]) > se.M.value or int(solution2[sum_of_req - 1]) < 1:
-                solution2[sum_of_req - 1] = dist.random_distribution(1, se.M.value)
-            # if solution2[sum_of_req - 1] == se.M.value + 1:
-            #     # a__i_m[i][int(solution2[j]) - 1][n] = 0  # there is no such fog so we dont have this in matrix
-            #     y__[i][n] = 2
-            #     solution2[c + sum_of_req - 1] = 2
-            # elif solution2[sum_of_req - 1] != se.M.value + 1:
-            if n == 0:
-                fog_i = int(solution2[sum_of_req - 1]) - 1
-            else:
-                solution2[sum_of_req - 1] = fog_i + 1  # first fog of requests of mue witch is not fog+1, we give it to all requests of mue
-            a__i_m[i][int(solution2[sum_of_req - 1]) - 1][n] = 1  # [mue][fog]
-            if int(solution2[c + sum_of_req - 1]) != 0 and int(solution2[c + sum_of_req - 1]) != 1:  # 2 means local or d2d cache
-                solution2[c + sum_of_req - 1] = dist.random_distribution(0, 1)
-                y__[i][n] = int(solution2[c + sum_of_req - 1])
-            else:
-                y__[i][n] = int(solution2[c + sum_of_req - 1])
-            # if y__[i][n] == 0:  # fog
-            #     # print(number_of_all_requests)
-            #     print(sum_of_req)
-            #     if solution2[2 * c + sum_of_req - 1] <= 0 or solution2[2 * c + sum_of_req - 1] > se.f__0.value:
-            #         solution2[2 * c + sum_of_req - 1] = random() * (se.f__0.value - 0) + 0
-            #     f__i_m[i][int(solution2[sum_of_req - 1]) - 1][n] = solution2[2 * c + sum_of_req - 1]
-            #     sum_f_m[int(solution2[sum_of_req - 1]) - 1] += f__i_m[i][int(solution2[sum_of_req - 1]) - 1][n]
-            # else:
-            #     if int(solution2[sum_of_req - 1]) != se.M.value + 1:  # there is no such fog means local or cache
-            #         f__i_m[i][int(solution2[sum_of_req - 1]) - 1][n] = 0
-            #     solution2[2 * c + sum_of_req - 1] = 0
+            if new_req[i][n] != -1:
+                sum_of_req += 1
+                print('sum_of_req')
+                print(sum_of_req)
+                if int(solution2[sum_of_req - 1]) > se.M.value or int(solution2[sum_of_req - 1]) < 1:
+                    solution2[sum_of_req - 1] = dist.random_distribution(1, se.M.value)
+
+                if n == 0:
+                    fog_i = int(solution2[sum_of_req - 1]) - 1
+                else:
+                    solution2[sum_of_req - 1] = fog_i + 1  # first fog of requests of mue witch is not fog+1, we give it to all requests of mue
+                a__i_m[i][int(solution2[sum_of_req - 1]) - 1][n] = 1  # [mue][fog]
+                if int(solution2[c + sum_of_req - 1]) != 0 and int(solution2[c + sum_of_req - 1]) != 1:  # 2 means local or d2d cache
+                    solution2[c + sum_of_req - 1] = dist.random_distribution(0, 1)
+                    y__[i][n] = int(solution2[c + sum_of_req - 1])
+                else:
+                    y__[i][n] = int(solution2[c + sum_of_req - 1])
 
     sum_of_req = 0
 
     for i in range(se.K.value):
 
         for n in range(len(new_req[i])):
-            sum_of_req += 1
-            for m in range(se.M.value):
-                if np.sum(np.array(a__i_m[i][m])) > 0 and i not in sum_a__i_m[m]:
-                    sum_a__i_m[m] = sum_a__i_m[m] + [i]
-                    print(sum_a__i_m)
-                # if len(sum_a__i_m[m]) > se.K__max.value:
-                #     flag = 0
-                #     index_m = 0
-                #     f = 0
-                #     for mm in range(se.M.value):
-                #         if i in sum_a__i_m[mm] and mm != m:
-                #             solution2[sum_of_req - 1] = mm + 1
-                #             index_m = mm + 1
-                #             flag = 1
-                #             break
-                #         elif len(sum_a__i_m[mm]) < se.K__max.value and f == 0:
-                #             index_m = mm + 1
-                #             f = 1
-                #     if flag == 1 or f == 1:
-                #         solution2[sum_of_req - 1] = index_m
-                #         # f__i_m[i][index_m - 1][n] = f__i_m[i][m][n]
-                #         a__i_m[i][index_m - 1][n] = a__i_m[i][m][n]
-                #         # f__i_m[i][m][n] = 0
-                #         a__i_m[i][m][n] = 0
-                #         if i not in sum_a__i_m[m]:
-                #             sum_a__i_m[index_m - 1].append(i)
-                #
-                #     elif flag == 0 and f == 0:
-                #         solution2[sum_of_req - 1] = se.M.value + 1  # means that its going to be computed local or d2d and has no fog
-                #         y__[i][n] = 2  # ???
-                #         solution2[c - 1 + sum_of_req] = 2
-                #         print(2 * c + sum_of_req - 1)
-                #         solution2[2 * c + sum_of_req - 1] = 0
-                #         f__i_m[i][m][n] = 0
-                #         a__i_m[i][m][n] = 0
-                #
-                #     sum_a__i_m[m].remove(i)
+            if new_req[i][n] != -1:
+                sum_of_req += 1
+                for m in range(se.M.value):
+                    if np.sum(np.array(a__i_m[i][m])) > 0 and i not in sum_a__i_m[m]:
+                        sum_a__i_m[m] = sum_a__i_m[m] + [i]
+                        print(sum_a__i_m)
 
-    # for m in range(se.M.value):
-    #
-    #     if sum_f_m[m] > se.f__0.value:
-    #         request_num = 0
-    #         for i in range(se.K.value):
-    #             for n in range(len(new_req[i])):
-    #                 request_num += 1
-    #                 if f__i_m[i][m][n] > 0:
-    #                     f__i_m[i][m][n] = (f__i_m[i][m][n] / sum_f_m[m]) * se.f__0.value
-    #                     solution2[2 * c + request_num - 1] = f__i_m[i][m][n]
-
-    # print('solution2')
-    # print(solution2)
-    # print('a__i_m')
-    # print(a__i_m)
-    # print('y__')
-    # print(y__)
-    # print('f__i_m')
-    # print(f__i_m)
-    # , np.array(f__i_m)
     return solution2, np.array(a__i_m), np.array(y__)

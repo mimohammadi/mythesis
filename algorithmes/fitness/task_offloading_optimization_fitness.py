@@ -21,43 +21,43 @@ class TaskOffloadingOpt:
                    range(np.size(req_set, 1))]
         print(new_req)
         for i in range(se.K.value):
-            for index_n, n in enumerate(new_req[i]):
-                sum_req += 1
-                for m in range(se.M.value):
-                    if a__i_m[i][m][index_n] == 1:
-                        sum_f_i_m = 0
-                        enter_time = 0
-                        latency = 0
-                        f_i_m = 0
-                        if len(fog_tasks[m]) != 0:
-                            sum_f_i_m = np.sum([fog_tasks[m][col][2] for col in range(len(fog_tasks[m]))])
-                        if len(fog_tasks[m]) < se.N__max.value and sum_f_i_m < se.f__0.value:
-                            if se.f__0.value - sum_f_i_m > 1 and len(fog_tasks[m]) < se.N__max.value - 1:
-                                f_i_m = dist.random_distribution(1, se.f__0.value - sum_f_i_m)
-                            else:
-                                f_i_m = se.f__0.value - sum_f_i_m
+            if new_req[i] != []:
+                for index_n, n in enumerate(new_req[i]):
+                    if n != -1:
+                        sum_req += 1
+                        for m in range(se.M.value):
+                            if a__i_m[i][m][index_n] == 1:
+                                sum_f_i_m = 0
+                                enter_time = 0
+                                latency = 0
+                                f_i_m = 0
+                                # if len(fog_tasks[m]) != 0:
+                                #     sum_f_i_m = np.sum([fog_tasks[m][col][2] for col in range(len(fog_tasks[m]))])
+                                if len(fog_tasks[m]) < se.N__max.value:
+                                    f_i_m = se.f__0.value / se.N__max.value
 
-                        elif len(fog_tasks[m]) == se.N__max.value or sum_f_i_m == se.f__0.value:
-                            ll = [fog_tasks[m][col][4] for col in range(len(fog_tasks[m]))]
-                            min_late = np.min(ll)
-                            min_late_indx = ll.index(min_late)
-                            output_tasks[m].append(fog_tasks[m][min_late_indx])
-                            f_i_m = fog_tasks[m][min_late_indx][2]
-                            latency = min_late
-                            enter_time = min_late
-                            fog_tasks[m].remove(fog_tasks[m][min_late_indx])
+                                if len(fog_tasks[m]) == se.N__max.value:
+                                    ll = [fog_tasks[m][col][4] for col in range(len(fog_tasks[m]))]
+                                    min_late = np.min(ll)
+                                    min_late_indx = ll.index(min_late)
+                                    output_tasks[m].append(fog_tasks[m][min_late_indx])
+                                    # f_i_m = fog_tasks[m][min_late_indx][2]
+                                    f_i_m = se.f__0.value / se.N__max.value
+                                    latency = min_late
+                                    enter_time = min_late
+                                    fog_tasks[m].remove(fog_tasks[m][min_late_indx])
 
-                        time_of_comp = task_library[n].D__n / f_i_m
-                        u_fog_i, u_cloud_i = cls.utility_for_fog_and_cloud_offloading(i, m, n, y_m_i[i][index_n], task_library, f_i_m, distance_from_fog, distance_from_cloud)
-                        print('u_fog_i')
-                        print(u_fog_i)
-                        print('u_cloud_i')
-                        print(u_cloud_i)
-                        fog_tasks[m].append([index_n, n, f_i_m, time_of_comp, latency + u_fog_i, enter_time])
-                        sum_ += ((y_m_i[i][index_n] * (latency + u_fog_i)) + ((1 - y_m_i[i][index_n]) * u_cloud_i))
-                        print('sum_')
-                        print(sum_)
-                    # return 1 / sum_
+                                time_of_comp = task_library[n].D__n / f_i_m
+                                u_fog_i, u_cloud_i = cls.utility_for_fog_and_cloud_offloading(i, m, n, y_m_i[i][index_n], task_library, f_i_m, distance_from_fog, distance_from_cloud)
+                                print('u_fog_i')
+                                print(u_fog_i)
+                                print('u_cloud_i')
+                                print(u_cloud_i)
+                                fog_tasks[m].append([index_n, n, f_i_m, time_of_comp, latency + u_fog_i, enter_time])
+                                sum_ += ((y_m_i[i][index_n] * (latency + u_fog_i)) + ((1 - y_m_i[i][index_n]) * u_cloud_i))
+                                print('sum_')
+                                print(sum_)
+                            # return 1 / sum_
         if sum_ != 0:
             return 1 / sum_
         return -10000000
