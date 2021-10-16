@@ -60,14 +60,14 @@ def task_offloading_fitness(solution1, solution_idx1):
 
 if __name__ == '__main__':
     # GA
-    t_max = 500
+    t_max = 50
 
     solution, solution_fitness, solution_idx = ga.genetic_alg(t_max,
-                                                              500,
+                                                              100,
                                                               fitness,
                                                               gene_type=[float],
                                                               gene_space=[[0, 1]],
-                                                              number_of_solutions=500,
+                                                              number_of_solutions=100,
                                                               num_genes=[se.N.value],
                                                               crossover_probability=0.9,
                                                               mutation_probability=0.01,
@@ -81,15 +81,20 @@ if __name__ == '__main__':
     request = []
     cacher = []
     number_of_all_requests = 0
+    workbook1 = xlsxwriter.Workbook('algorithmes/catched.xlsx')
+    worksheet1 = workbook1.add_worksheet()
     for n in range(len(task_library)):
         qq = random()
-        if qq > task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
+        if qq < task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
             request, y = Distributions.homogenous_poisson_point_process_distribution(0, se.K.value, 0, se.K.value,
                                                                                      se.lambda_.value)
             number_of_all_requests += len(request)
 
             for i in range(len(request)):
                 set_of_mues[int(request[i])].request_set.append(n)
+        else: # catched tasks
+            worksheet1.write_column(1, n, [n])
+    workbook1.close()
 
     workbook = xlsxwriter.Workbook('algorithmes/request.xlsx')
     worksheet = workbook.add_worksheet()
@@ -119,8 +124,8 @@ if __name__ == '__main__':
     # number_of_all_requests =10
     if number_of_all_requests != 0:
         final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
-            iteration_num=500, parent_num=500, fitness=task_offloading_fitness, gene_type=[int, int],
-            number_of_solutions=500, num_genes=[number_of_all_requests, number_of_all_requests],
+            iteration_num=50, parent_num=100, fitness=task_offloading_fitness, gene_type=[int, int],
+            number_of_solutions=100, num_genes=[number_of_all_requests, number_of_all_requests],
             crossover_probability=0.9, mutation_probability=0.01,
             gene_space=[[1, se.M.value], [0, 1]],
             on_constrain=toa.on_mutation)

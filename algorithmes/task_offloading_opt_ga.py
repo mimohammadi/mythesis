@@ -58,11 +58,11 @@ def split_chromosome(solution2):
 
     df = pd.read_excel('algorithmes/request.xlsx')
     req_set = df.to_numpy()
-    print('req_set')
-    print(req_set)
+    # print('req_set')
+    # print(req_set)
     new_req = [[int(req_set[i][j]) if np.isnan(req_set[i][j]) == False else -1 for i in range(np.size(req_set, 0))] for j in range(np.size(req_set, 1))]
-    print('new_req')
-    print(new_req)
+    # print('new_req')
+    # print(new_req)
     a__i_m = [[[0 for j in range(len(new_req[col]))] for row in range(se.M.value)] for col in range(se.K.value)]
     y__ = [[0 for j in range(len(new_req[col]))] for col in range(se.K.value)]
     # f__i_m = [[[0 for j in range(len(new_req[col]))] for row in range(se.M.value)] for col in range(se.K.value)]
@@ -77,8 +77,8 @@ def split_chromosome(solution2):
         for n in range(len(new_req[i])):
             if new_req[i][n] != -1:
                 sum_of_req += 1
-                print('sum_of_req')
-                print(sum_of_req)
+                # print('sum_of_req')
+                # print(sum_of_req)
                 if int(solution2[sum_of_req - 1]) > se.M.value or int(solution2[sum_of_req - 1]) < 1:
                     solution2[sum_of_req - 1] = dist.random_distribution(1, se.M.value)
 
@@ -103,6 +103,6 @@ def split_chromosome(solution2):
                 for m in range(se.M.value):
                     if np.sum(np.array(a__i_m[i][m])) > 0 and i not in sum_a__i_m[m]:
                         sum_a__i_m[m] = sum_a__i_m[m] + [i]
-                        print(sum_a__i_m)
+                        # print(sum_a__i_m)
 
     return solution2, np.array(a__i_m), np.array(y__)

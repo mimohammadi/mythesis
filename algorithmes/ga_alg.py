@@ -512,6 +512,8 @@ class GA:
             #     self.population[parents_to_keep.shape[0]:, :] = self.last_generation_offspring_mutation
 
             self.generations_completed = generation + 1  # The generations_completed attribute holds the number of the last completed generation.
+            print('self.generations_completed = ')
+            print(self.generations_completed)
 
             # here is where we should apply constrains
             if not (self.on_constrain is None):

@@ -13,13 +13,13 @@ class TaskOffloadingOpt:
         fog_tasks = [[] for m in range(se.M.value)]
         sum_req = 0
         output_tasks = [[] for m in range(se.M.value)]
-        print('a__i_m')
-        print(a__i_m)
+        # print('a__i_m')
+        # print(a__i_m)
         df = pd.read_excel('algorithmes/request.xlsx')
         req_set = df.to_numpy()
         new_req = [[int(req_set[i][j]) for i in range(np.size(req_set, 0)) if np.isnan(req_set[i][j]) == False] for j in
                    range(np.size(req_set, 1))]
-        print(new_req)
+        # print(new_req)
         for i in range(se.K.value):
             if new_req[i] != []:
                 for index_n, n in enumerate(new_req[i]):
@@ -49,14 +49,14 @@ class TaskOffloadingOpt:
 
                                 time_of_comp = task_library[n].D__n / f_i_m
                                 u_fog_i, u_cloud_i = cls.utility_for_fog_and_cloud_offloading(i, m, n, y_m_i[i][index_n], task_library, f_i_m, distance_from_fog, distance_from_cloud)
-                                print('u_fog_i')
-                                print(u_fog_i)
-                                print('u_cloud_i')
-                                print(u_cloud_i)
+                                # print('u_fog_i')
+                                # print(u_fog_i)
+                                # print('u_cloud_i')
+                                # print(u_cloud_i)
                                 fog_tasks[m].append([index_n, n, f_i_m, time_of_comp, latency + u_fog_i, enter_time])
                                 sum_ += ((y_m_i[i][index_n] * (latency + u_fog_i)) + ((1 - y_m_i[i][index_n]) * u_cloud_i))
-                                print('sum_')
-                                print(sum_)
+                                # print('sum_')
+                                # print(sum_)
                             # return 1 / sum_
         if sum_ != 0:
             return 1 / sum_
@@ -69,11 +69,11 @@ class TaskOffloadingOpt:
         u_fog_i = 0
         u_cloud_i = 0
         t_l_i_n = task_library[n].D__n / se.w.value
-        print('t_l_i_n')
-        print(t_l_i_n)
+        # print('t_l_i_n')
+        # print(t_l_i_n)
         e_l_i_n = se.kappa.value * task_library[n].D__n * (se.w.value ** 2)
-        print('e_l_i_n')
-        print(e_l_i_n)
+        # print('e_l_i_n')
+        # print(e_l_i_n)
         t_r = cls.transmit_rate_of_requester_associated_with_fog(m, i, distance_from_fog)
         if t_r != 0:
             t_u_i_m_n = task_library[n].S__n / t_r
