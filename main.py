@@ -73,6 +73,15 @@ if __name__ == '__main__':
                                                               mutation_probability=0.01,
                                                               on_constrain=af.on_mutation)
 
+    workbook2 = xlsxwriter.Workbook('algorithmes/result1.xlsx')
+    worksheet2 = workbook2.add_worksheet()
+    for i in range(len(solution)):
+        worksheet2.write_column(1, i, solution)
+        worksheet2.write_column(1, i, [solution_fitness])
+        worksheet2.write_column(1, i, [solution_idx])
+    worksheet2.close()
+
+
     for n in range(se.N.value):
         task_library[n].q__n = solution[n]
         print(task_library[n].q__n)
@@ -81,7 +90,7 @@ if __name__ == '__main__':
     request = []
     cacher = []
     number_of_all_requests = 0
-    workbook1 = xlsxwriter.Workbook('algorithmes/catched.xlsx')
+    workbook1 = xlsxwriter.Workbook('algorithmes/cached.xlsx')
     worksheet1 = workbook1.add_worksheet()
     for n in range(len(task_library)):
         qq = random()
@@ -130,10 +139,13 @@ if __name__ == '__main__':
             gene_space=[[1, se.M.value], [0, 1]],
             on_constrain=toa.on_mutation)
 
-
-
-
-
+        workbook3 = xlsxwriter.Workbook('algorithmes/result2.xlsx')
+        worksheet3 = workbook3.add_worksheet()
+        for i in range(len(solution)):
+            worksheet3.write_column(1, i, final_result)
+            worksheet3.write_column(1, i, [final_result_fitness])
+            worksheet3.write_column(1, i, [final_result_idx])
+        worksheet3.close()
 
 
 

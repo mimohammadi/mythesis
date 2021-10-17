@@ -134,8 +134,8 @@ class GA:
 
         fitness_sum = np.sum(fitness)
         probs = fitness / fitness_sum
-        print('fitness')
-        print(fitness)
+        # print('fitness')
+        # print(fitness)
         probs_start = np.zeros(probs.shape,
                                   dtype=np.float)  # An array holding the start values of the ranges of probabilities.
         probs_end = np.zeros(probs.shape,
@@ -429,8 +429,8 @@ class GA:
 
         # # Measuring the fitness of each chromosome in the population. Save the fitness in the last_generation_fitness attribute.
         self.last_generation_fitness = self.cal_pop_fitness()
-        print('self.last_generation_fitness = ')
-        print(self.last_generation_fitness)
+        # print('self.last_generation_fitness = ')
+        # print(self.last_generation_fitness)
 
         best_solution, best_solution_fitness, best_match_idx = self.best_solution(
             pop_fitness=self.last_generation_fitness)
