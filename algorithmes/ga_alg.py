@@ -4,6 +4,9 @@ import matplotlib
 import matplotlib.pyplot
 import numpy as np
 import warnings
+from multiprocessing import Pool
+import time
+from config.constants import SystemModelEnums as se
 
 from config.data_generator import Distributions as dsb
 
@@ -177,7 +180,8 @@ class GA:
             -offspring_size: The size of the offspring to produce.
         It returns an array the produced offspring.
         """
-
+        # p = Pool(se.Number_of_processors.value)
+        # values = p.map(self.cross_popx, [[int(offspring_size / se.Number_of_processors.value), parents, max_old, i, se.Number_of_processors.value] for i in range(se.Number_of_processors.value)])
         offspring = np.empty(offspring_size, dtype=object)
 
         for k in range(offspring_size[0]):

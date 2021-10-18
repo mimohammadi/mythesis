@@ -24,8 +24,9 @@ class BaseEnum(Enum):
 
 
 class SystemModelEnums(BaseEnum):
+    Number_of_processors = name_tuple(2, "Number of processor for parallel")  # 2
     M = name_tuple(30, "Number of FNs")#2
-    K = name_tuple(250, "Number of MUEs")#5
+    K = name_tuple(50, "Number of MUEs")#5
     K__max = name_tuple(10, "maximum number of accessible MUEs in each FN")#2
     N__max = name_tuple(10, "maximum number of processable task in each FN")#2
     N = name_tuple(100, "Number of Tasks")#5

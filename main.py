@@ -17,6 +17,22 @@ from config.constants import BaseEnum as be
 from collections import namedtuple
 import pandas as pd
 import xlsxwriter
+from multiprocessing import Pool
+from algorithmes import ga_alg
+import time
+#import algorithmes.ga_alg as ga
+
+
+class PooledGA(ga_alg.GA):
+
+    def cal_pop_fitness(self):
+        global pool
+
+        pop_fitness = pool.map(fitness_wrapper, self.population)
+        print(pop_fitness)
+        pop_fitness = np.array(pop_fitness)
+        return pop_fitness
+
 
 # name_tuple = namedtuple("tuple", ['value', 'description'])
 
@@ -58,6 +74,10 @@ def task_offloading_fitness(solution1, solution_idx1):
     return tolo.task_offloading_opt_problem(a__i_m, y_i, set_of_mues, task_library, distance_from_fog, distance_from_cloud)
 
 
+def fitness_wrapper(solution01):
+    return task_offloading_fitness(solution01, 0)
+
+
 if __name__ == '__main__':
     # GA
     t_max = 50
@@ -72,6 +92,29 @@ if __name__ == '__main__':
                                                               crossover_probability=0.9,
                                                               mutation_probability=0.01,
                                                               on_constrain=af.on_mutation)
+    # ga_instance = PooledGA(num_generations=t_max,
+    #                        initial_pop_num=100,
+    #                        num_parents_mating=100,
+    #                        fitness_func=fitness,
+    #                        gene_num=[se.N.value],
+    #                        gene_type=[float],
+    #                        keep_parents=0,
+    #                        crossover_probability=0.9,
+    #                        mutation_probability=0.01,
+    #                        on_constrain=af.on_mutation,
+    #                        save_best_solutions=True,
+    #                        gene_space=[[0, 1]])
+    #
+    # with Pool(processes=se.Number_of_processors.value) as pool:
+    #     ga_instance.run()
+    #
+    #     solution, solution_fitness, solution_idx = ga_instance.best_solution()
+    #     print("value of the best solution = {solution}".format(solution=solution))
+    #     print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+    #     print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
+    #
+    #     #print("--- %s seconds ---" % (time.time() - start_time))
+
 
     workbook2 = xlsxwriter.Workbook('algorithmes/result1.xlsx')
     worksheet2 = workbook2.add_worksheet()
@@ -79,8 +122,7 @@ if __name__ == '__main__':
         worksheet2.write_column(1, i, solution)
         worksheet2.write_column(1, i, [solution_fitness])
         worksheet2.write_column(1, i, [solution_idx])
-    worksheet2.close()
-
+    workbook2.close()
 
     for n in range(se.N.value):
         task_library[n].q__n = solution[n]
@@ -94,7 +136,7 @@ if __name__ == '__main__':
     worksheet1 = workbook1.add_worksheet()
     for n in range(len(task_library)):
         qq = random()
-        if qq < task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
+        if qq > task_library[n].q__n:  # we dont bring the cached tasks here in requests for now
             request, y = Distributions.homogenous_poisson_point_process_distribution(0, se.K.value, 0, se.K.value,
                                                                                      se.lambda_.value)
             number_of_all_requests += len(request)
@@ -130,22 +172,45 @@ if __name__ == '__main__':
 
     print('number_of_all_requests')
     print(number_of_all_requests)
+    start_time = time.time()
     # number_of_all_requests =10
     if number_of_all_requests != 0:
-        final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
-            iteration_num=50, parent_num=100, fitness=task_offloading_fitness, gene_type=[int, int],
-            number_of_solutions=100, num_genes=[number_of_all_requests, number_of_all_requests],
-            crossover_probability=0.9, mutation_probability=0.01,
-            gene_space=[[1, se.M.value], [0, 1]],
-            on_constrain=toa.on_mutation)
+        # final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
+        #     iteration_num=50, parent_num=100, fitness=task_offloading_fitness, gene_type=[int, int],
+        #     number_of_solutions=100, num_genes=[number_of_all_requests, number_of_all_requests],
+        #     crossover_probability=0.9, mutation_probability=0.01,
+        #     gene_space=[[1, se.M.value], [0, 1]],
+        #     on_constrain=toa.on_mutation)
+        ga_instance = PooledGA(num_generations=50,
+                            initial_pop_num=100,
+                            num_parents_mating=100,
+                            fitness_func=task_offloading_fitness,
+                            gene_num=[number_of_all_requests, number_of_all_requests],
+                            gene_type=[int, int],
+                            keep_parents=0,
+                            crossover_probability=0.9,
+                            mutation_probability=0.01,
+                            on_constrain=toa.on_mutation,
+                            save_best_solutions=True,
+                            gene_space=[[1, se.M.value], [0, 1]])
 
-        workbook3 = xlsxwriter.Workbook('algorithmes/result2.xlsx')
-        worksheet3 = workbook3.add_worksheet()
-        for i in range(len(solution)):
-            worksheet3.write_column(1, i, final_result)
-            worksheet3.write_column(1, i, [final_result_fitness])
-            worksheet3.write_column(1, i, [final_result_idx])
-        worksheet3.close()
+        with Pool(processes=se.Number_of_processors.value) as pool:
+            ga_instance.run()
+
+            final_result, final_result_fitness, final_result_idx = ga_instance.best_solution()
+            print("value of the best solution = {solution}".format(solution=final_result))
+            print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=final_result_fitness))
+            print("Index of the best solution : {solution_idx}".format(solution_idx=final_result_idx))
+
+            print("--- %s seconds ---" % (time.time() - start_time))
+
+            workbook3 = xlsxwriter.Workbook('algorithmes/result2.xlsx')
+            worksheet3 = workbook3.add_worksheet()
+            for i in range(len(final_result)):
+                worksheet3.write_column(1, i, final_result)
+                worksheet3.write_column(1, i, [final_result_fitness])
+                worksheet3.write_column(1, i, [final_result_idx])
+            workbook3.close()
 
 
 
