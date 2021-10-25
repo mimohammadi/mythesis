@@ -83,11 +83,11 @@ if __name__ == '__main__':
     t_max = 50
 
     solution, solution_fitness, solution_idx = ga.genetic_alg(t_max,
-                                                              100,
+                                                              50,
                                                               fitness,
                                                               gene_type=[float],
                                                               gene_space=[[0, 1]],
-                                                              number_of_solutions=100,
+                                                              number_of_solutions=50,
                                                               num_genes=[se.N.value],
                                                               crossover_probability=0.9,
                                                               mutation_probability=0.01,
@@ -145,6 +145,7 @@ if __name__ == '__main__':
                 set_of_mues[int(request[i])].request_set.append(n)
         else: # catched tasks
             worksheet1.write_column(1, n, [n])
+            print('cached = ' + str(n))
     workbook1.close()
 
     workbook = xlsxwriter.Workbook('algorithmes/request.xlsx')
@@ -172,8 +173,10 @@ if __name__ == '__main__':
 
     print('number_of_all_requests')
     print(number_of_all_requests)
+    # exit()
     start_time = time.time()
     # number_of_all_requests =10
+
     if number_of_all_requests != 0:
         # final_result, final_result_fitness, final_result_idx = ga.genetic_alg(
         #     iteration_num=50, parent_num=100, fitness=task_offloading_fitness, gene_type=[int, int],
@@ -182,8 +185,8 @@ if __name__ == '__main__':
         #     gene_space=[[1, se.M.value], [0, 1]],
         #     on_constrain=toa.on_mutation)
         ga_instance = PooledGA(num_generations=50,
-                            initial_pop_num=100,
-                            num_parents_mating=100,
+                            initial_pop_num=50,
+                            num_parents_mating=50,
                             fitness_func=task_offloading_fitness,
                             gene_num=[number_of_all_requests, number_of_all_requests],
                             gene_type=[int, int],

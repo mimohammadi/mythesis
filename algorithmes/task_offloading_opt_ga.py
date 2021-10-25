@@ -67,6 +67,7 @@ def split_chromosome(solution2):
     y__ = [[0 for j in range(len(new_req[col]))] for col in range(se.K.value)]
     # f__i_m = [[[0 for j in range(len(new_req[col]))] for row in range(se.M.value)] for col in range(se.K.value)]
     c = int(len(solution2) / 2)
+    print('c=' + str(c))
     sum_f_m = [0 for row in range(se.M.value)]
     sum_of_req = 0
     sum_a__i_m = [[] for row in range(se.M.value)]
@@ -79,6 +80,7 @@ def split_chromosome(solution2):
                 sum_of_req += 1
                 # print('sum_of_req')
                 # print(sum_of_req)
+
                 if int(solution2[sum_of_req - 1]) > se.M.value or int(solution2[sum_of_req - 1]) < 1:
                     solution2[sum_of_req - 1] = dist.random_distribution(1, se.M.value)
 

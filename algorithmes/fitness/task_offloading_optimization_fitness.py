@@ -54,14 +54,14 @@ class TaskOffloadingOpt:
                                 # print('u_cloud_i')
                                 # print(u_cloud_i)
                                 fog_tasks[m].append([index_n, n, f_i_m, time_of_comp, latency + u_fog_i, enter_time])
-                                sum_ += ((y_m_i[i][index_n] * (latency + u_fog_i)) + ((1 - y_m_i[i][index_n]) * u_cloud_i))
+                                sum_ += (((1 - y_m_i[i][index_n]) * (latency + u_fog_i)) + (y_m_i[i][index_n] * u_cloud_i))
                                 # print('sum_')
                                 # print(sum_)
                             # return 1 / sum_
+        print('sum_ = ' + str(sum_))
         if sum_ != 0:
             return 1 / sum_
         return -10000000
-
 
     @classmethod
     def utility_for_fog_and_cloud_offloading(cls, i, m, n, y_i_m, task_library, f__i_m, distance_from_fog, distance_from_cloud):
@@ -90,7 +90,6 @@ class TaskOffloadingOpt:
         if y_i_m == 0 and f__i_m > 0:
             t_f_i_m_n = task_library[n].D__n / f__i_m
             e_cpt_i_m_n = se.kappa_server.value * task_library[n].D__n * (f__i_m ** 2)
-
 
             t_fog_i_m_n = t_u_i_m_n + t_d_m_i_n + t_f_i_m_n
             e_fog_i_m_n = e_u_i_m_n + e_cpt_i_m_n + e_d_m_i_n
@@ -130,9 +129,11 @@ class TaskOffloadingOpt:
             if mm != m:
                 sum_ += se.p__m.value * (distance_from_cloud[mm] ** (- se.a.value)) * se.g_d_i_m.value
 
-        return 10 ** (se.B.value * math.log(
+        # print('ii = ' + str(1 + ((se.p__m.value * (distance_from_cloud[m] ** (- se.a.value)) * se.g_d_i_m.value) / (
+        #             se.sigma_2.value + sum_))))
+        return 1.25 * 10 ** -7 * (10 ** (se.B.value * math.log(
             1 + ((se.p__m.value * (distance_from_cloud[m] ** (- se.a.value)) * se.g_d_i_m.value) / (
-                    se.sigma_2.value + sum_)), 2) / 10)
+                    se.sigma_2.value + sum_)), 2) / 10))
 
     @classmethod
     def cloud_transmit_rate(cls, m, distance_from_cloud):
@@ -141,8 +142,10 @@ class TaskOffloadingOpt:
             if mm != m:
                 sum_ += se.p__u.value * (distance_from_cloud[mm] ** (- se.a.value)) * se.g_u_i_m.value
 
-        return 10 ** (se.B.value * math.log(1 + ((se.p__u.value * (distance_from_cloud[m] ** (- se.a.value)) * se.g_u_i_m.value) / (
-                        se.sigma_2.value + sum_)), 2) / 10)
+        # print('ii = ' + str(1 + ((se.p__u.value * (distance_from_cloud[m] ** (- se.a.value)) * se.g_u_i_m.value) / (
+        #                 se.sigma_2.value + sum_))))
+        return 1.25 * 10 ** -7 * (10 ** (se.B.value * math.log(1 + ((se.p__u.value * (distance_from_cloud[m] ** (- se.a.value)) * se.g_u_i_m.value) / (
+                        se.sigma_2.value + sum_)), 2) / 10))
 
     @classmethod
     def transmit_rate_of_requester_associated_with_fog(cls, m, i, distance_from_fog):
@@ -153,7 +156,8 @@ class TaskOffloadingOpt:
                     if ii != i:
                         sum_ += se.p__u.value * (distance_from_fog[ii][mm] ** (- se.a.value)) * se.g_u_i_m.value
 
-        return 10 ** (se.B.value * math.log(1 + ((se.p__u.value * (distance_from_fog[i][m] ** (- se.a.value)) * se.g_u_i_m.value)/(se.sigma_2.value + sum_)), 2) / 10)
+        # print('ii = ' + str(1 + ((se.p__u.value * (distance_from_fog[i][m] ** (- se.a.value)) * se.g_u_i_m.value)/(se.sigma_2.value + sum_))))
+        return 1.25 * 10 ** -7 * (10 ** (se.B.value * math.log(1 + ((se.p__u.value * (distance_from_fog[i][m] ** (- se.a.value)) * se.g_u_i_m.value)/(se.sigma_2.value + sum_)), 2) / 10))
 
     @classmethod
     def downlink_rate(cls, m, i, distance_from_fog):
@@ -164,4 +168,5 @@ class TaskOffloadingOpt:
                     if ii != i:
                         sum_ += se.p__m.value * (distance_from_fog[ii][mm] ** (- se.a.value)) * se.g_d_i_m.value
 
-        return 10 ** (se.B.value * math.log(1 + ((se.p__m.value * (distance_from_fog[i][m] ** (- se.a.value)) * se.g_d_i_m.value)/(se.sigma_2.value + sum_)), 2) / 10)
+        print('ll = ' + str(1 + ((se.p__m.value * (distance_from_fog[i][m] ** (- se.a.value)) * se.g_d_i_m.value)/(se.sigma_2.value + sum_))))
+        return 1.25 * 10 ** -7 * (10 ** (se.B.value * math.log(1 + ((se.p__m.value * (distance_from_fog[i][m] ** (- se.a.value)) * se.g_d_i_m.value)/(se.sigma_2.value + sum_)), 2) / 10))
